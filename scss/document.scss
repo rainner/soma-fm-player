@@ -1,0 +1,34 @@
+// document setup
+html, body {
+  display: block;
+  position: relative;
+  max-width: 100vw;
+  min-height: 100vh;
+}
+html {
+  overflow: hidden;
+  overflow-y: auto;
+}
+body {
+  font-family: $fontFamily;
+  font-weight: $fontWeight;
+  font-size: calc( #{$fontSize} - 6px );
+  line-height: $fontSpace;
+  color: $colorDocumentText;
+  background-size: cover;
+  background-color: $colorDocument;
+  background-image:
+    linear-gradient( 217deg, rgba( $colorPrimary, .8 ), rgba( $colorPrimary, 0 ) 70.71% ),
+    linear-gradient( 127deg, rgba( $colorDocument, 1 ), rgba( $colorDocument, 0 ) 70.71% ),
+    linear-gradient( 336deg, rgba( $colorSecondary, .8 ), rgba( $colorSecondary, 0 ) 70.71% );
+
+  @media #{$screenSmall} {
+    font-size: calc( #{$fontSize} - 4px );
+  }
+  @media #{$screenMedium} {
+    font-size: calc( #{$fontSize} - 2px );
+  }
+  @media #{$screenLarge} {
+    font-size: $fontSize;
+  }
+}

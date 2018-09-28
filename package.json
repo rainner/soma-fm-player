@@ -1,0 +1,25 @@
+{
+  "name": "soma-fm-player",
+  "version": "1.0.0",
+  "description": "SPA audio player for the streaming stations provided by Soma FM.",
+  "main": "index.js",
+  "scripts": {
+    "sass": "node-sass -w ./scss -o ./public/css",
+    "sass-min": "node-sass -w ./scss -o ./public/css --output-style compressed",
+    "init": "live-server --open=."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rainner/soma-fm-player.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rainner/soma-fm-player/issues"
+  },
+  "homepage": "https://github.com/rainner/soma-fm-player#readme",
+  "dependencies": {
+    "node-sass": "^4.9.3"
+  }
+}

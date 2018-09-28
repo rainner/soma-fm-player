@@ -1,0 +1,60 @@
+// page reset
+*, *:before, *:after {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background-color: transparent;
+  text-transform: none;
+  text-shadow: none;
+  box-shadow: none;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-overflow-scrolling: touch;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform-style: flat;
+  transition:
+    border-color $fxSpeed $fxEase,
+    background-color $fxSpeed $fxEase,
+    opacity $fxSpeed $fxEase,
+    transform $fxSpeed $fxEase;
+}
+
+// block types
+article, aside, details, figcaption, figure, footer, header, hgroup,
+menu, nav, section, main, summary, div, h1, h2, h3, h4, h5, h6, hr,
+p, ol, ul, form, img {
+  display: block;
+}
+
+// form elements
+input, textarea, select, optgroup, option, button {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: normal;
+  line-height: inherit;
+  color: inherit;
+}
+select, button {
+  cursor: pointer;
+}
+
+// links
+a {
+  color: $colorSecondary;
+
+  &:hover {
+    color: lighten( $colorSecondary, 10% );
+  }
+}
+
+// horizontal lines
+hr {
+  display: block;
+  overflow: hidden;
+  margin: $padSpace 0;
+  height: 0;
+  border: 0;
+  border-bottom: $lineWidth $lineStyle $lineColor;
+}

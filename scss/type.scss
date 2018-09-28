@@ -1,0 +1,38 @@
+// headings
+h1, h2, h3, h4, h5, h6 {
+  display: block;
+  font-weight: normal;
+  line-height: 1.1em;
+  color: $colorBright;
+}
+h1 { font-size: 220%; }
+h2 { font-size: 200%; }
+h3 { font-size: 180%; }
+h4 { font-size: 160%; }
+h5 { font-size: 140%; }
+h6 { font-size: 120%; }
+
+// text helpers
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.text-justify { text-align: justify; }
+.text-uppercase { text-transform: uppercase; }
+.text-lowercase { text-transform: lowercase; }
+.text-capitalize { text-transform: capitalize; }
+.text-underline { text-decoration: underline; }
+.text-striked { text-decoration: line-through; }
+.text-italic { font-style: italic; }
+.text-bold { font-weight: bold; }
+.text-nowrap { white-space: nowrap; }
+.text-clip { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.text-primary { color: $colorPrimary; }
+.text-secondary { color: $colorSecondary; }
+.text-grey { color: $colorGrey; }
+.text-bright { color: $colorBright; }
+.text-faded { opacity: 0.5; }
+.text-big { font-size: 120%; }
+.text-bigger { font-size: 180%; }
+.text-huge { font-size: 240%; }
+.text-small { font-size: 90%; }
+.text-condense { letter-spacing: -1px; }

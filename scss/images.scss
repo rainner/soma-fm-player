@@ -1,0 +1,16 @@
+// rouded image
+.img-round {
+  overflow: hidden;
+  text-indent: -1000px;
+  border-radius: 1000px;
+  border: $lineWidth solid $colorBright;
+  background-color: lighten( $colorDocumentDark, 10% );
+  background-image: linear-gradient( 45deg, lighten( $colorDocumentDark, 10% ), lighten( $colorDocumentDark, 25% ) );
+  box-shadow: $shadowPaper;
+}
+
+// centered image
+.img-center {
+  display: block;
+  margin: 0 auto;
+}
