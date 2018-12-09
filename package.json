@@ -2,10 +2,11 @@
   "name": "soma-fm-player",
   "version": "1.0.0",
   "description": "SPA audio player for the streaming stations provided by Soma FM.",
-  "main": "index.js",
   "scripts": {
-    "sass": "node-sass -w ./scss -o ./public/css",
-    "sass-min": "node-sass -w ./scss -o ./public/css --output-style compressed",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --hot",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "sass": "node-sass -w ./src/scss -o ./public/css",
+    "sass-min": "node-sass -w ./src/scss -o ./public/css --output-style compressed",
     "init": "live-server --open=."
   },
   "repository": {
@@ -19,7 +20,21 @@
     "url": "https://github.com/rainner/soma-fm-player/issues"
   },
   "homepage": "https://github.com/rainner/soma-fm-player#readme",
-  "dependencies": {
-    "node-sass": "^4.9.3"
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "cross-env": "^5.2.0",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.4",
+    "ignore-loader": "^0.1.2",
+    "node-sass": "^4.11.0",
+    "postcss-loader": "^2.1.6",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.23.1",
+    "webpack": "^3.12.0",
+    "webpack-dev-server": "^2.11.3"
   }
 }
