@@ -1,0 +1,154 @@
+/**
+ * Align children vertically (column)
+ */
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+/**
+ * Align children horizontally (row)
+ */
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+/**
+ * Flex items alignment and space distribution
+ */
+ .flex-wrap {
+  flex-wrap: wrap;
+}
+.flex-left {
+  justify-content: flex-start;
+}
+.flex-center {
+  justify-content: center;
+}
+.flex-right {
+  justify-content: flex-end;
+}
+.flex-space {
+  justify-content: space-between;
+}
+.flex-around {
+  justify-content: space-around;
+}
+.flex-top {
+  align-items: flex-start;
+}
+.flex-middle {
+  align-items: center;
+}
+.flex-bottom {
+  align-items: flex-end;
+}
+
+/**
+ * Flex items sizing
+ */
+.flex-a {
+  flex: auto;
+}
+.flex-1 {
+  flex: 1;
+}
+.flex-2 {
+  flex: 2;
+}
+.flex-3 {
+  flex: 3;
+}
+.flex-4 {
+  flex: 4;
+}
+.flex-5 {
+  flex: 5;
+}
+@for $i from 1 through 10 {
+  $s: ( 10 * $i );
+  $p: ( 10% * $i );
+  .flex-#{$s} { flex: $p; width: $p; }
+}
+
+/**
+ * Fixed with labels
+ */
+.flex-label {
+  width: 100px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/**
+ * Table-like lists
+ */
+.flex-list {
+  display: block;
+  position: relative;
+
+  & > .flex-header,
+  & > .flex-item {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: stretch;
+    margin: 0 0 ( $lineWidth * 2 ) 0;
+    padding: ( $padSpace / 2 );
+    border-radius: $lineJoin;
+    background-color: rgba( 0, 0, 0, 0.1 );
+  }
+  & > .flex-item:hover {
+    background-color: rgba( 0, 0, 0, 0.3 );
+  }
+}
+
+/**
+ * Auto switch between column and row
+ */
+.flex-autorow {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+
+  & > .flex-item {
+    flex: 1;
+    width: 100%;
+    margin: 0 0 $padSpace 0; // push bottom
+    &:last-of-type { margin: 0; }
+  }
+
+  @media #{$screenMedium} {
+    flex-direction: row;
+
+    & > .flex-item {
+      margin: 0 $padSpace 0 0; // push right
+      &:last-of-type { margin: 0; }
+    }
+  }
+}
+
+/**
+ * Basic grid
+ */
+.flex-grid {
+  display: grid;
+  grid-gap: $padSpace;
+  grid-template-columns: repeat( auto-fill, minmax( 140px, 1fr ) );
+
+  &.flex-grid-sm {
+    grid-template-columns: repeat( auto-fill, minmax( 200px, 1fr ) );
+  }
+  &.flex-grid-md {
+    grid-template-columns: repeat( auto-fill, minmax( 300px, 1fr ) );
+  }
+  &.flex-grid-lg {
+    grid-template-columns: repeat( auto-fill, minmax( 400px, 1fr ) );
+  }
+}
+

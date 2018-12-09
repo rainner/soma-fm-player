@@ -1,0 +1,98 @@
+// common large bright text buttons
+.common-btn {
+  display: inline-block;
+  text-align: center;
+  font-size: 180%;
+  font-weight: normal;
+  line-height: 1em;
+  width: 1em;
+  color: $colorBright;
+
+  &:hover {
+    color: darken( $colorBright, 20% );
+  }
+}
+
+// common cta button/link
+.cta-btn {
+  display: inline-block;
+  text-decoration: none;
+  padding: ( $padSpace / 2 ) $padSpace;
+  color: $colorPrimaryText;
+  background-color: darken( desaturate( $colorPrimary, 10% ), 10% );
+  border-radius: 100px;
+  line-height: 1.1em;
+
+  &:hover {
+    color: lighten( $colorPrimaryText, 5% );
+    background-color: darken( $colorPrimary, 5% );
+  }
+}
+
+// common form input wrapper
+.form-input {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: stretch;
+  color: $colorBright;
+
+  & > input {
+    flex: 1;
+    line-height: 1.5em;
+    padding: 0 ( $padSpace / 2 );
+  }
+}
+
+// common form slider container
+@mixin sliderTrack {
+  width: 100%;
+  height: 3px;
+  background-color: lighten( $colorDocumentDark, 10% );
+  color: transparent !important;
+  border-color: transparent !important;
+  border-radius: $lineJoin !important;
+  border: 0 !important;
+}
+@mixin sliderThumb {
+  width: 1em;
+  height: 1em;
+  margin: -.4em 0 0 0;
+  border-radius: 50%;
+  box-shadow: $shadowPaper;
+  background-color: $colorBright;
+  transition: background $fxSpeed $fxEase;
+  color: transparent !important;
+  border-color: transparent !important;
+  border: 0 !important;
+  cursor: pointer;
+  &:hover {
+    background-color: darken( $colorBright, 20% );
+  }
+}
+.form-slider {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: stretch;
+  width: 100%;
+  max-width: 6em;
+  line-height: 1em;
+
+  & > input {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    margin: 0 .5em;
+    // track
+    &::-webkit-slider-runnable-track { @include sliderTrack; }
+    &::-moz-range-track { @include sliderTrack; }
+    &::-ms-track { @include sliderTrack; }
+    // thumb
+    &::-webkit-slider-thumb { -webkit-appearance: none; @include sliderThumb; }
+    &::-moz-range-thumb { @include sliderThumb; }
+    &::-ms-thumb { @include sliderThumb; }
+  }
+}

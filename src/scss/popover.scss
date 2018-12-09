@@ -1,0 +1,94 @@
+// common absolute popover
+@keyframes popoverShow {
+    0% { transform: translateX( -50% ) scale( .8 ); opacity: 0; }
+   35% { transform: translateX( -50% ) scale( 1.2 ); opacity: .8; }
+  100% { transform: translateX( -50% ) scale( 1 ); opacity: 1; }
+}
+.popover {
+  position: relative;
+
+  .popover-box {
+    display: none;
+    position: absolute;
+    padding: ( $padSpace / 2 ) 0;
+    max-width: 300px;
+    min-height: 100px;
+    left: 50%;
+    bottom: 50%;
+    transition: none;
+    transform: translateX( -50% );
+    background-color: lighten( $colorDocumentDark, 8% );
+    border-radius: $lineJoin;
+    box-shadow: $shadowOverlay;
+    animation: popoverShow $fxSpeed $fxEase forwards;
+    z-index: 2000;
+
+    &:before {
+      content: '';
+      display: none;
+      position: absolute;
+      transition: none;
+      width: 0;
+      height: 0;
+      transform: translateX( -50% );
+      left: 50%;
+      z-index: 2001;
+    }
+
+    & > button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: ( $padSpace / 2 ) $padSpace;
+      line-height: 1.2em;
+      white-space: nowrap;
+      background-color: rgba( $colorDocumentDark, 0 );
+
+      &:hover {
+        background-color: rgba( $colorDocumentDark, .2 );
+      }
+      & + button {
+        border-top: $lineWidth $lineStyle $lineColor;
+      }
+    }
+
+    &.popover-left {
+      transform: none;
+      left: auto;
+      right: 0;
+    }
+    &.popover-right {
+      transform: none;
+      left: 0;
+      right: auto;
+    }
+    &.popover-top {
+      top: auto;
+      bottom: 100%;
+      &:before {
+        display: block;
+        top: auto;
+        bottom: -10px;;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 10px solid lighten( $colorDocumentDark, 8% );
+      }
+    }
+    &.popover-bottom {
+      top: 100%;
+      bottom: auto;
+      &:before {
+        display: block;
+        top: -10px;
+        bottom: auto;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid lighten( $colorDocumentDark, 8% );
+      }
+    }
+  }
+  &:hover > .popover-box,
+  &:active > .popover-box {
+    display: block;
+  }
+}

@@ -1,0 +1,61 @@
+// spacing and padding
+$padSpace: 1em;
+$padSmall: $padSpace / 2;
+$headerHeight: 3.5em;
+
+// document colors
+$colorDocument: #8086a0;
+$colorDocumentDark: #1e1f30;
+$colorDocumentDarker: darken( $colorDocumentDark, 10% );
+$colorDocumentLight: #a0a6b0;
+$colorDocumentText: desaturate( lighten( $colorDocumentDark, 40% ), 5% );
+
+// common colors
+$colorPrimary: crimson;
+$colorPrimaryText: lighten( $colorPrimary, 40% );
+$colorSecondary: cornflowerblue;
+$colorSecondaryText: darken( $colorSecondary, 40% );
+$colorDefault: lightslategray;
+$colorDefaultText: darken( $colorDefault, 40% );
+$colorGrey: slategray;
+$colorGreyText: darken( $colorGrey, 40% );
+$colorBright: whitesmoke;
+$colorBrightText: darken( $colorBright, 40% );
+$colorOverlay: rgba( black, 0.4 );
+$colorCard: rgba( black, 0.2 );
+
+// borders and lines
+$lineWidth: 2px;
+$lineStyle: solid;
+$lineColor: rgba( black, 0.08 );
+$lineJoin: 6px;
+
+// base font options
+$fontFamily: 'Roboto Condensed', sans-serif;
+$fontSize: 20px;
+$fontSpace: 1.2em;
+$fontWeight: 700;
+
+// shadow styles
+$shadowContainer: 0 1px 30px rgba( black, 0.8 );
+$shadowOverlay: 0 1px 20px rgba( black, 0.6 );
+$shadowPaper: 0 1px 3px rgba( black, 0.5 );
+
+// transition props
+$fxSpeed: 400ms;
+$fxEase: cubic-bezier( 0.215, 0.610, 0.355, 1.000 );
+$fxSpeedOffset: calc( #{$fxSpeed} / 3 );
+$fxSlideDist: 50px;
+$fxShrinkScale: .4;
+$fxGrowScale: 1.4;
+$fxRotateAmount: 8deg;
+
+// screen sizes
+$sizeSmall: 420px;
+$sizeMedium: 720px;
+$sizeLarge: 1200px;
+
+// screen breakpoints
+$screenSmall: "only screen and (min-width : #{$sizeSmall})";
+$screenMedium: "only screen and (min-width : #{$sizeMedium})";
+$screenLarge: "only screen and (min-width : #{$sizeLarge})";
