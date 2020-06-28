@@ -112,9 +112,9 @@ new Vue({
     },
 
     // check for errors that would affect playback
-    hasError() {
+    hasErrors() {
+      if ( this.errors.support || this.errors.stream ) return true;
       if ( this.errors.channels && !this.channels.length ) return true;
-      if ( this.errors.stream ) return true;
       return false;
     },
   },
@@ -138,40 +138,50 @@ new Vue({
       this.errors = errors;
     },
 
-    // check if an error has been set for a key
-    checkError( key ) {
-      return ( key && this.errors.hasOwnProperty( key ) && this.errors[ key ] );
+    // clear all error messages
+    clearError( key ) {
+      let errors = Object.assign( {}, this.errors );
+      delete errors[ key ];
+      this.errors = errors;
     },
 
-    // clear all error messages
-    clearErrors() {
-      Object.keys( this.errors ).forEach( key => {
-        this.errors[ key ] = '';
-      });
+    // check if an error has been set for a key
+    hasError( key ) {
+      return ( key && this.errors.hasOwnProperty( key ) );
+    },
+
+    // flush all errors
+    flushErrors() {
+      this.errors = {};
     },
 
     // show player when app is mounted
-    initPlayer() {
+    setupEvents() {
       document.querySelector( '#_spnr' ).style.display = 'none';
       document.querySelector( '#player-wrap' ).style.opacity = '1';
       document.addEventListener( 'visibilitychange', e => { this.visible = ( document.visibilityState === 'visible' ) } );
       window.addEventListener( 'hashchange', e => this.applyRoute( window.location.hash ) );
       window.addEventListener( 'keydown', this.onKeyboard );
-      this.init = true;
     },
 
     // reset selected channel
     resetPlayer() {
       this.closeAudio();
-      this.clearErrors();
+      this.flushErrors();
       this.channel = {};
       this.songs = [];
+      window.location.hash = '/';
     },
 
     // try resuming stream problem if possible
     tryAgain() {
-      this.clearErrors();
-      this.playChannel( this.channel );
+      if ( this.hasError( 'support' ) ) {
+        this.flushErrors();
+        setTimeout( this.setupAudio, 1 );
+      } else {
+        this.flushErrors();
+        this.playChannel( this.channel );
+      }
     },
 
     // show/hide the sidebar
@@ -248,16 +258,21 @@ new Vue({
       _store.set( 'favorites_data', favs );
     },
 
-    // setup audio routing and stream events
+    // setup audio and everything that depends on the AudioContext API
     setupAudio() {
       const a = _audio.setupAudio();
-
+      if ( !a ) {
+        return this.setError( 'support', '' +
+          'Web Audio is not supported by your browser. ' +
+          'Please consider upgrading, or installing a better web browser.'
+        );
+      }
       a.addEventListener( 'waiting', e => {
         this.playing = false;
         this.loading = true;
       });
       a.addEventListener( 'playing', e => {
-        this.setError( 'stream', '' );
+        this.clearError( 'stream' );
         this.playing = true;
         this.loading = false;
       });
@@ -267,10 +282,15 @@ new Vue({
       });
       a.addEventListener( 'error', e => {
         this.closeAudio();
-        this.setError( 'stream', `The selected stream (${this.channel.title}) could not load, or has stopped loading due to a network problem.` );
+        this.setError( 'stream', `The selected stream (${this.channel.title}) could not load, or stopped loading due to network problems.` );
         this.playing = false;
         this.loading = false;
       });
+      this.getChannels( true );
+      this.setupCanvas();
+      this.updateCanvas();
+      this.setupMaintenance();
+      this.init = true;
     },
 
     // close active audio
@@ -298,7 +318,7 @@ new Vue({
         if ( err ) return this.setError( 'channels', err );
         if ( sidebar ) this.toggleSidebar( true );
         this.channels = channels;
-        this.setError( 'channels', '' );
+        this.clearError( 'channels' );
         this.updateCurrentChannel();
         this.applyRoute( window.location.hash );
       });
@@ -314,7 +334,7 @@ new Vue({
         if ( typeof cb === 'function' ) cb( songs );
         this.track = songs.shift();
         this.songs = songs.slice( 0, 3 );
-        this.setError( 'songs', '' );
+        this.clearError( 'songs' );
       });
     },
 
@@ -338,13 +358,24 @@ new Vue({
       }
     },
 
+    // wrapper for loading and playing a new audio stream source
+    playAudioStream( stream ) {
+      this.flushErrors();
+      this.loading = true; // spinner
+      _audio.setVolume( this.volume );
+      _audio.playSource( stream );
+    },
+
     // play audio stream for a channel
     playChannel( channel ) {
       if ( this.playing || !channel || !channel.mp3file ) return;
-      this.loading = true;
-      this.clearErrors();
-      _audio.playSource( channel.mp3file );
-      _audio.setVolume( this.volume );
+
+      // fix to get around AudioContext auto-play policy in chrome
+      if ( _audio.getState( 'suspended' ) ) {
+        _audio.resumeAudio( () => this.playAudioStream( channel.mp3file ) );
+      } else {
+        this.playAudioStream( channel.mp3file );
+      }
     },
 
     // select a channel to play
@@ -426,12 +457,8 @@ new Vue({
   mounted() {
     this.loadSortOptions();
     this.loadFavorites();
-    this.getChannels( true );
+    this.setupEvents();
     this.setupAudio();
-    this.setupCanvas();
-    this.updateCanvas();
-    this.setupMaintenance();
-    this.initPlayer();
   },
 
   // on app destroyed
