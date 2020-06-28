@@ -89,6 +89,7 @@
     overflow: hidden;
     overflow-y: auto;
     padding: $padSpace;
+    @include customScrollbar;
 
     & > section {
       margin: auto 0; // prevent vertical aligned flex item from overflowing
@@ -164,6 +165,7 @@
       margin-left: -10px;
       padding-left: 10px;
       flex: 1;
+      @include customScrollbar;
 
       .player-stations-list-item {
         position: relative;

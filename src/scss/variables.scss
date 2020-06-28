@@ -24,6 +24,10 @@ $colorBrightText: darken( $colorBright, 40% );
 $colorOverlay: rgba( black, 0.4 );
 $colorCard: rgba( black, 0.2 );
 
+// scrollbar colors
+$scrollTrack: darken( $colorDocumentDark, 4% );
+$scrollThumb: lighten( $colorDocumentDark, 12% );
+
 // borders and lines
 $lineWidth: 2px;
 $lineStyle: solid;
@@ -59,3 +63,22 @@ $sizeLarge: 1200px;
 $screenSmall: "only screen and (min-width : #{$sizeSmall})";
 $screenMedium: "only screen and (min-width : #{$sizeMedium})";
 $screenLarge: "only screen and (min-width : #{$sizeLarge})";
+
+// customized scrollbars
+@mixin customScrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: $scrollThumb $scrollTrack;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: $scrollTrack;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $scrollThumb;
+    border-radius: 10px;
+    border: 2px solid $scrollTrack;
+  }
+}
+
