@@ -40,7 +40,7 @@ export default {
       for ( let c of channels ) {
         if ( !Array.isArray( c.playlists ) ) continue;
         c.plsfile   = c.playlists.filter( p => ( p.format === 'mp3' && /^(highest|high)$/.test( p.quality ) ) ).shift().url || '';
-        c.mp3file   = 'http://ice1.somafm.com/'+ c.id +'-128-mp3';
+        c.mp3file   = 'https://ice1.somafm.com/'+ c.id +'-128-mp3';
         c.songsurl  = 'https://somafm.com/songs/'+ c.id +'.json';
         c.infourl   = 'https://somafm.com/'+ c.id +'/';
         c.twitter   = c.twitter ? 'https://twitter.com/@'+ c.twitter : '';
