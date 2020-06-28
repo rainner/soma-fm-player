@@ -64,14 +64,14 @@
           <main class="player-content flex-row">
 
             <!-- default greet message -->
-            <section class="player-greet" v-if="!hasChannel && !hasError">
+            <section class="player-greet" v-if="!hasChannel && !hasErrors">
               <div class="fx fx-slide-left push-bottom"><h1>Pick a Station</h1></div>
               <div class="fx fx-slide-left fx-delay-1 push-bottom">This is a music streaming player for the channels provided by SomaFM.com. Just pick a station from the sidebar to the right to start listening.</div>
               <div class="fx fx-slide-up fx-delay-2 pad-top"><button class="cta-btn" @click="toggleSidebar( true )"><i class="fa fa-headphones">&nbsp;</i> View Stations</button></div>
             </section>
 
             <!-- show selected channel info if possible -->
-            <section class="player-channel flex-1" v-if="hasChannel && !hasError" :key="channel.id">
+            <section class="player-channel flex-1" v-if="hasChannel && !hasErrors" :key="channel.id">
               <div class="flex-autorow flex-top flex-stretch">
 
                 <!-- station details -->
@@ -139,8 +139,8 @@
               </div>
             </section>
 
-            <!-- show tracks for selected channel if possible -->
-            <section class="player-errors flex-1 text-center" v-if="hasError" key="errors">
+            <!-- show error messages -->
+            <section class="player-errors flex-1 text-center" v-if="hasErrors" key="errors">
               <div class="push-bottom fx fx-drop-in fx-delay-1">
                 <i class="fa fa-plug text-huge text-faded"></i>
               </div>
