@@ -97,24 +97,25 @@
                     <div>{{ channel.description }}</div>
                   </div>
 
+                  <!-- buttons -->
+                  <div class="push-bottom text-nowrap">
+                    <a class="cta-btn text-nowrap fx fx-slide-up fx-delay-4" :href="channel.infourl" title="Channel page" target="_blank">
+                      <span class="fx fx-notx fx-ibk fx-drop-in" :key="channel.listeners"><i class="fa fa-headphones"></i> {{ channel.listeners | toCommas( 0 ) }}</span>
+                    </a> &nbsp;
+                    <a class="cta-btn text-nowrap fx fx-slide-up fx-delay-5" :href="channel.twitter" title="Twitter page" target="_blank">
+                      <i class="fa fa-twitter"></i>
+                    </a> &nbsp;
+                    <a class="cta-btn text-nowrap fx fx-slide-up fx-delay-6" :href="channel.plsfile" title="Download PLS" target="_blank">
+                      <i class="fa fa-download"></i>
+                    </a>
+                  </div>
+
                   <!-- current track -->
-                  <div class="card push-bottom fx fx-slide-up fx-delay-4" :key="track.date">
+                  <div class="card push-bottom fx fx-slide-left fx-delay-7" :key="track.date">
+                    <h5 class="heading text-nowrap">Now Playing</h5>
                     <div><span class="text-secondary">{{ track.title | toText( 'N/A' ) }}</span></div>
                     <div><span class="text-faded">From:</span> <span class="text-bright">{{ track.album | toText( 'N/A' ) }}</span></div>
                     <div><span class="text-faded">By:</span> <span class="text-default">{{ track.artist | toText( 'N/A' ) }}</span></div>
-                  </div>
-
-                  <!-- buttons -->
-                  <div class="push-bottom text-nowrap">
-                    <a class="cta-btn text-nowrap fx fx-slide-up fx-delay-5" :href="channel.infourl" title="Channel page" target="_blank">
-                      <span class="fx fx-notx fx-ibk fx-drop-in" :key="channel.listeners"><i class="fa fa-headphones"></i> {{ channel.listeners | toCommas( 0 ) }}</span>
-                    </a> &nbsp;
-                    <a class="cta-btn text-nowrap fx fx-slide-up fx-delay-6" :href="channel.twitter" title="Twitter page" target="_blank">
-                      <i class="fa fa-twitter"></i>
-                    </a> &nbsp;
-                    <a class="cta-btn text-nowrap fx fx-slide-up fx-delay-7" :href="channel.plsfile" title="Download PLS" target="_blank">
-                      <i class="fa fa-download"></i>
-                    </a>
                   </div>
 
                 </div>

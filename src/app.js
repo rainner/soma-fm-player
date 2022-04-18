@@ -135,7 +135,7 @@ new Vue({
     setError( key, err ) {
       let errors = Object.assign( {}, this.errors );
       errors[ key ] = String( err || '' ).trim();
-      if ( err ) this.warn( 'ERROR('+ key +'):', err );
+      if ( err ) console.warn( 'ERROR('+ key +'):', err );
       this.errors = errors;
     },
 
@@ -159,9 +159,13 @@ new Vue({
     // show player when app is mounted
     setupEvents() {
       document.addEventListener( 'visibilitychange', e => { this.visible = ( document.visibilityState === 'visible' ) } );
-      document.addEventListener( 'click', e => { this.interact = true; } );
       window.addEventListener( 'hashchange', e => this.applyRoute( window.location.hash ) );
       window.addEventListener( 'keydown', this.onKeyboard );
+      // audio related events
+      _audio.on( 'waiting', this.onWaiting );
+      _audio.on( 'playing', this.onPlaying );
+      _audio.on( 'ended', this.onEnded );
+      _audio.on( 'error', this.onError );
     },
 
     // hide spinner and show player
@@ -328,30 +332,7 @@ new Vue({
     playChannel( channel ) {
       if ( this.playing || !channel || !channel.mp3file ) return;
       this.loading = true;
-
-      _audio.stopAudio();
-      _audio.setupAudio();
       _audio.setVolume( this.volume );
-
-      _audio.on( 'waiting', e => {
-        this.playing = false;
-        this.loading = true;
-      });
-      _audio.on( 'playing', e => {
-        this.clearError( 'stream' );
-        this.playing = true;
-        this.loading = false;
-      });
-      _audio.on( 'ended', e => {
-        this.playing = false;
-        this.loading = false;
-      });
-      _audio.on( 'error', e => {
-        this.closeAudio();
-        this.setError( 'stream', `The selected stream (${this.channel.title}) could not load, or stopped loading due to network problems.` );
-        this.playing = false;
-        this.loading = false;
-      });
       _audio.playSource( channel.mp3file );
     },
 
@@ -400,6 +381,35 @@ new Vue({
       if ( k === ' ' && this.channel.id ) return this.togglePlay();
       if ( k === 'Enter' ) return this.toggleSidebar( true );
       if ( k === 'Escape' ) return this.toggleSidebar( false );
+    },
+
+    // waiting for media to load
+    onWaiting( e ) {
+      if ( this.sto ) clearInterval( this.sto );
+      this.sto = setTimeout( () => this.onError( e ), 10000 );
+      this.playing = false;
+      this.loading = true;
+    },
+
+    // audio stream playing
+    onPlaying( e ) {
+      this.clearError( 'stream' );
+      this.playing = true;
+      this.loading = false;
+    },
+
+    // audio stream ended
+    onEnded( e ) {
+      this.playing = false;
+      this.loading = false;
+    },
+
+    // error loading stream
+    onError( e ) {
+      this.closeAudio();
+      this.setError( 'stream', `The selected stream (${this.channel.title}) could not load, or stopped loading due to network problems.` );
+      this.playing = false;
+      this.loading = false;
     },
 
     // start tracking playback time

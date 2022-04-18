@@ -22,15 +22,16 @@ const cssLoaders = () => {
 
 // webpack config
 module.exports = {
-  watch: true,
-  devtool: '#eval-source-map',
+
   entry: {
     app: appEntry,
   },
+
   output: {
     path: serverRoot,
     filename: path.join( bundleDir, '[name].min.js' ),
   },
+
   module: {
     rules: [
       {
@@ -49,9 +50,11 @@ module.exports = {
       }
     ]
   },
+
   plugins: [
     new ExtractTextPlugin( path.join( bundleDir, '[name].min.css' ) )
   ],
+
   devServer: {
     host: serverHost,
     port: serverPort,
@@ -63,9 +66,12 @@ module.exports = {
     noInfo: false,
     compress: false,
   },
+
   performance: {
-    hints: false
-  }
+    hints: 'error',
+    maxEntrypointSize: 614400,
+    maxAssetSize: 614400
+  },
 }
 
 if ( isProd ) {
@@ -76,7 +82,6 @@ if ( isProd ) {
       }
     }),
     new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
       compress: {
         warnings: false
       }

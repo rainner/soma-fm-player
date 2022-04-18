@@ -8,9 +8,12 @@ export default {
   _gain: null,
   _analyser: null,
   _freq: new Uint8Array( 32 ),
+  _events: {},
 
-  // setup audio routing
+  // setup audio routing, called after user interaction, setup once
   setupAudio() {
+    if ( this._audio && this._context ) return;
+
     this._audio    = new Audio();
     this._context  = new ( window.AudioContext || window.webkitAudioContext )();
     this._source   = this._context.createMediaElementSource( this._audio );
@@ -22,26 +25,28 @@ export default {
     this._source.connect( this._analyser );
     this._gain.connect( this._context.destination );
 
-    if ( this._context.state === 'suspended' ) {
-      this._context.resume().then( () => {
-        console.log( 'Audio context has been resumed.' );
-      });
-    }
     this._audio.addEventListener( 'canplay', e => {
       this._freq = new Uint8Array( this._analyser.frequencyBinCount );
       this._audio.play();
+    });
+
+    [ 'waiting', 'playing', 'ended', 'stalled', 'error' ].forEach( event => {
+      this._audio.addEventListener( event, e => this.emit( event, e ) );
     });
   },
 
   // add event listeners to the audio api
   on( event, callback ) {
-    if ( !this._audio ) return;
-    this._audio.addEventListener( event, callback );
+    if ( event && typeof callback === 'function' ) {
+      this._events[ event ] = callback;
+    }
   },
 
-  // check if audio has been initialized before
-  hasContext() {
-    return this._context ? true : false;
+  // emit saved audio event
+  emit( event, data ) {
+    if ( event && this._events.hasOwnProperty( event ) ) {
+      this._events[ event ]( data );
+    }
   },
 
   // update and return analyser frequency data
@@ -78,13 +83,16 @@ export default {
 
   // play audio source url
   playSource( source ) {
-    if ( !this._audio ) return;
+    this.setupAudio();
     this.stopAudio();
+
+    if ( this._context.state === 'suspended' ) {
+      this._context.resume().then( () => {
+        console.log( 'Audio context has been resumed.' );
+      });
+    }
     this._audio.src = String( source || '' ) + '?x=' + Date.now();
-    this._audio.preload = 'metadata';
     this._audio.crossOrigin = 'anonymous';
-    this._audio.autoplay = false;
-    this._audio.muted = false;
     this._audio.load();
   },
 

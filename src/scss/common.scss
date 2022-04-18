@@ -39,6 +39,10 @@
   padding: $padSpace;
   background-image: radial-gradient( ellipse at top left, rgba( black, 0.3 ) 0%, rgba( black, 0.05 ) 100% );
   border-radius: $lineJoin;
+
+  .heading {
+    margin: 0 0 .5rem 0;
+  }
 }
 
 // margin helpers
