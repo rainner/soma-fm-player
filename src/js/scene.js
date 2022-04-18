@@ -1,7 +1,6 @@
 /**
  * ThreeJS scene handler
  */
-import Light from './light';
 import Sphere from './sphere';
 
 export default {
@@ -16,9 +15,9 @@ export default {
 
   // setup animation canvas
   setupCanvas() {
-    this._wrap = document.querySelector( '#player-wrap' );
+    this._wrap   = document.querySelector( '#player-wrap' );
     this._canvas = document.querySelector( '#player-canvas' );
-    this._box = this._wrap.getBoundingClientRect();
+    this._box    = this._wrap.getBoundingClientRect();
 
     // setup scene and renderer
     this._scene = new THREE.Scene();
@@ -33,10 +32,11 @@ export default {
     this._camera.rotation.set( 0, 0, 0 );
 
     // add and create objects
-    this._objects.push( Light );
     this._objects.push( Sphere );
-    for ( let o of this._objects ) o.create( this._box, this._scene );
 
+    for ( let o of this._objects ) {
+      o.create( this._box, this._scene );
+    }
     // setup events
     window.addEventListener( 'mousemove', this.updateMouse.bind( this ) );
     window.addEventListener( 'resize', this.updateSize.bind( this ) );
@@ -46,7 +46,9 @@ export default {
 
   // update custom objects in 3d scene
   updateObjects( freq ) {
-    for ( let o of this._objects ) o.update( this._box, this._mouse, freq );
+    for ( let o of this._objects ) {
+      o.update( this._box, this._mouse, freq );
+    }
     this._renderer.render( this._scene, this._camera );
   },
 

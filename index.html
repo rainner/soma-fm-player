@@ -49,7 +49,7 @@
 
         <!-- bg absolute elements -->
         <figure id="player-bg" class="player-bg" style="background-image: url( public/img/bg.jpg );"></figure>
-        <canvas id="player-canvas" class="player-canvas"></canvas>
+        <canvas id="player-canvas" class="player-canvas" width="800" height="400"></canvas>
 
         <!-- main player layout -->
         <section class="player-layout">
@@ -164,7 +164,7 @@
 
             <!-- player controls -->
             <section class="player-controls flex-row flex-middle push-right" :class="{ 'disabled': !canPlay }">
-              <button class="common-btn" @click="togglePlay()">
+              <button class="common-btn" @click="togglePlay">
                 <i v-if="loading" class="fa fa-circle-o-notch fx fx-spin-right" key="wait"></i>
                 <i v-else-if="playing" class="fa fa-stop fx fx-drop-in" key="stop"></i>
                 <i v-else class="fa fa-play fx fx-drop-in" key="play"></i>
@@ -183,11 +183,8 @@
 
             <!-- player links -->
             <section class="player-links text-nowrap">
-              <a class="common-btn text-faded" href="https://github.com/rainner/soma-fm-player" title="View on Github" target="_blank">
+              <a class="common-btn text-faded" href="https://github.com/rainner" title="Github profile" target="_blank">
                 <i class="fa fa-github"></i>
-              </a> &nbsp;
-              <a class="common-btn text-faded" href="https://codepen.io/rainner" title="Codepen Projects" target="_blank">
-                <i class="fa fa-codepen"></i>
               </a>
             </section>
 
@@ -210,7 +207,7 @@
 
             <!-- sidebar stations list -->
             <ul class="player-stations-list">
-              <li class="player-stations-list-item flex-row flex-top flex-stretch" v-for="c of channelsList" :key="c.id" @click="setRoute( c.route )" :class="{ 'active': c.active }">
+              <li class="player-stations-list-item flex-row flex-top flex-stretch" v-for="c of channelsList" :key="c.id" @click="selectChannel( c, true )" :class="{ 'active': c.active }">
                 <figure class="push-right if-small">
                   <img class="img-round" width="70" height="70" :src="c.largeimage" :alt="c.title" />
                 </figure>
@@ -260,10 +257,10 @@
     </div> <!-- wrapper -->
 
     <!-- app scripts -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/96/three.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script>
-    <script src="public/bundles/app.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/96/three.min.js" defer></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js" defer></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js" defer></script>
+    <script src="public/bundles/app.min.js" defer></script>
 
   </body>
 </html>

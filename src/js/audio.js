@@ -4,47 +4,59 @@
 export default {
   _context: null,
   _audio: null,
-  _freq: null,
   _source: null,
   _gain: null,
   _analyser: null,
+  _freq: new Uint8Array( 32 ),
 
   // setup audio routing
   setupAudio() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext || false;
-    if ( !AudioContext ) return false;
-
-    this._audio = new Audio();
-    this._freq = new Uint8Array( 1024 );
-    this._context = new AudioContext();
-    this._source = this._context.createMediaElementSource( this._audio );
+    this._audio    = new Audio();
+    this._context  = new ( window.AudioContext || window.webkitAudioContext )();
+    this._source   = this._context.createMediaElementSource( this._audio );
     this._analyser = this._context.createAnalyser();
-    this._gain = this._context.createGain();
+    this._gain     = this._context.createGain();
 
+    this._analyser.fftSize = 32;
     this._source.connect( this._gain );
     this._source.connect( this._analyser );
     this._gain.connect( this._context.destination );
 
-    this._audio.addEventListener( 'canplaythrough', e => {
+    if ( this._context.state === 'suspended' ) {
+      this._context.resume().then( () => {
+        console.log( 'Audio context has been resumed.' );
+      });
+    }
+    this._audio.addEventListener( 'canplay', e => {
       this._freq = new Uint8Array( this._analyser.frequencyBinCount );
       this._audio.play();
     });
-    return this._audio;
   },
 
-  // get audio context state
-  getState( state ) {
-    if ( !this._context ) return '';
-    if ( state ) return ( this._context.state === state );
-    return this._context.state;
+  // add event listeners to the audio api
+  on( event, callback ) {
+    if ( !this._audio ) return;
+    this._audio.addEventListener( event, callback );
+  },
+
+  // check if audio has been initialized before
+  hasContext() {
+    return this._context ? true : false;
   },
 
   // update and return analyser frequency data
-  getFreqData() {
+  // this is not working on some apple devices:
+  // https://bugs.webkit.org/show_bug.cgi?id=211394
+  getFreqData( playing ) {
     if ( this._analyser ) {
       this._analyser.getByteFrequencyData( this._freq );
     }
-    return this._freq;
+    let _freq = Math.floor( this._freq[ 4 ] | 0 ) / 255;
+
+    if ( playing ) {
+      return ( _freq ) ? _freq : 0.6;
+    }
+    return _freq;
   },
 
   // set audio volume
@@ -64,19 +76,15 @@ export default {
     try { this._audio.close(); } catch ( e ) {}
   },
 
-  // resume suspended audio in chrome
-  resumeAudio( callback ) {
-    if ( !this._context ) return;
-    this._context.resume().then( callback ).catch( e => {} );
-  },
-
   // play audio source url
   playSource( source ) {
     if ( !this._audio ) return;
     this.stopAudio();
-    this.resumeAudio();
     this._audio.src = String( source || '' ) + '?x=' + Date.now();
+    this._audio.preload = 'metadata';
     this._audio.crossOrigin = 'anonymous';
+    this._audio.autoplay = false;
+    this._audio.muted = false;
     this._audio.load();
   },
 

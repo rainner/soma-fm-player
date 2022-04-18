@@ -21,10 +21,9 @@ export default {
 
   // animate light on frame loop
   update( box, mouse, freq ) {
-    let dist  = Math.floor( freq[ 1 ] | 0 ) / 255;
-    let color = Math.floor( freq[ 16 ] | 0 ) / 255;
-
-    this.light.distance = 360 + ( 140 * dist );
-    this.color.setHSL( color, .5, .5 );
+    let zinit = ( box.width < 820 ) ? 260 : 320;
+    let zoff  = ( box.width < 820 ) ? 80 : 100;
+    this.light.distance = zinit + ( zoff * freq );
+    this.color.setHSL( freq, .5, .5 );
   },
 }

@@ -13,7 +13,7 @@ export default {
     let shape1   = new THREE.CircleGeometry( 1, 10 );
     let shape2   = new THREE.CircleGeometry( 2, 20 );
     let points   = new THREE.SphereGeometry( 100, 30, 14 ).vertices;
-    let material = new THREE.MeshLambertMaterial( { color: 0xffffff, opacity: 0, side: THREE.DoubleSide } );
+    let material = new THREE.MeshNormalMaterial( { transparent: true, opacity: 0, side: THREE.DoubleSide } );
     let center   = new THREE.Vector3( 0, 0, 0 );
     let radius   = 12;
 
@@ -36,22 +36,23 @@ export default {
 
   // animate sphere on frame loop
   update( box, mouse, freq ) {
-    let bass = ( Math.floor( freq[ 1 ] | 0 ) / 255 );
-    let xoff = ( box.width < 1080 ) ? 0 : 60;
-    let zoff = ( box.width < 1080 ) ? -80 : 10;
+    let xoff = ( box.width < 800 ) ? 0 : 40;
+    let zoff = ( box.width < 800 ) ? -60 : 20;
+    let zmod = .5 + ( .5 * freq );
 
-    this.move.x = xoff + -( mouse.x * 0.015 );
+    this.move.x = xoff + -( mouse.x * 0.012 );
     this.group.position.x += ( this.move.x - this.group.position.x ) / this.ease;
     this.group.position.y += ( this.move.y - this.group.position.y ) / this.ease;
-    this.group.position.z = zoff + ( bass * 80 );
+    this.group.position.z = zoff + ( 80 * freq );
     this.group.rotation.y -= 0.003;
 
     for ( let i = 0; i < this.group.children.length; i++ ) {
       let shape = this.group.children[ i ];
       let { radius, cycle, pace, home } = shape.userData;
 
+      shape.material.opacity = .2 + ( .8 * freq );
       shape.position.set( home.x, home.y, home.z );
-      shape.translateZ( bass * Math.sin( cycle / pace ) * radius );
+      shape.translateZ( zmod * Math.sin( cycle / pace ) * radius );
       shape.userData.cycle++;
     }
   },
