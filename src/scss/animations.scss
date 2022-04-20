@@ -6,6 +6,7 @@
   animation-timing-function: $fxEase;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
+  transform-origin: center;
 }
 
 // disable transitions on element

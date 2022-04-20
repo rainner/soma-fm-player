@@ -20,7 +20,10 @@ new Vue({
     playing: false,
     loading: false,
     sidebar: false,
-    volume: 0.5,
+    volume: 100,
+    // sidebar toggles
+    sbActive: false,
+    sbVisible: false,
     // channels stuff
     route: '/',
     channels: [],
@@ -170,9 +173,11 @@ new Vue({
 
     // hide spinner and show player
     initPlayer() {
-      document.querySelector( '#_spnr' ).style.display = 'none';
-      document.querySelector( '#player-wrap' ).style.opacity = '1';
-      this.init = true;
+      setTimeout( () => {
+        document.querySelector( '#_spnr' ).style.display = 'none';
+        document.querySelector( '#player-wrap' ).style.opacity = '1';
+        this.init = true;
+      }, 100 );
     },
 
     // reset selected channel
@@ -196,7 +201,15 @@ new Vue({
 
     // show/hide the sidebar
     toggleSidebar( toggle ) {
-      this.sidebar = ( typeof toggle === 'boolean' ) ? toggle : false;
+      const state = ( typeof toggle === 'boolean' ) ? toggle : false;
+      if ( state ) {
+        this.sbActive = true; // bring to front
+        this.sbVisible = true; // show drawer
+        this.$refs.sidebarDrawer.focus();
+      } else {
+        this.sbVisible = false;
+        setTimeout( () => { this.sbActive = false; }, 500 );
+      }
     },
 
     // toggle stream playback for current selected channel
@@ -205,6 +218,17 @@ new Vue({
       if ( this.loading ) return;
       if ( this.playing ) return this.closeAudio();
       this.playChannel( this.channel );
+    },
+
+    // save volume
+    saveVolume( e ) {
+      _store.set( 'player_volume', this.volume );
+    },
+
+    // load saved volume from store
+    loadVolume() {
+      const vol = parseInt( _store.get( 'player_volume' ) ) || 100;
+      this.volume = vol;
     },
 
     // load last sort options from store
@@ -332,8 +356,8 @@ new Vue({
     playChannel( channel ) {
       if ( this.playing || !channel || !channel.mp3file ) return;
       this.loading = true;
-      _audio.setVolume( this.volume );
       _audio.playSource( channel.mp3file );
+      _audio.setVolume( this.volume );
     },
 
     // select a channel to play
@@ -462,6 +486,7 @@ new Vue({
   mounted() {
     this.loadSortOptions();
     this.loadFavorites();
+    this.loadVolume();
     this.setupEvents();
     this.getChannels( true );
     this.setupCanvas();

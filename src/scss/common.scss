@@ -37,11 +37,32 @@
 // common card style
 .card {
   padding: $padSpace;
-  background-image: radial-gradient( ellipse at top left, rgba( black, 0.3 ) 0%, rgba( black, 0.05 ) 100% );
+  background-image: radial-gradient( ellipse at top left, rgba( black, 0.5 ) 0%, rgba( black, 0 ) 90% );
   border-radius: $lineJoin;
 
   .heading {
     margin: 0 0 .5rem 0;
+  }
+}
+
+// hover state on text elements
+.hover-text {
+  &:hover {
+    color: lighten( $colorSecondary, 10% );
+  }
+}
+
+// focus state on text elements
+.focus-text {
+  &:focus, &:active {
+    text-shadow: $focusText;
+  }
+}
+
+// focus state on box elements
+.focus-box {
+  &:focus, &:active {
+    box-shadow: $focusBox;
   }
 }
 

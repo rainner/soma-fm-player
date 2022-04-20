@@ -12,7 +12,7 @@ html {
 body {
   font-family: $fontFamily;
   font-weight: $fontWeight;
-  font-size: calc( #{$fontSize} - 6px );
+  font-size: calc( #{$fontSize} - 3px );
   line-height: $fontSpace;
   color: $colorDocumentText;
   background-size: cover;
@@ -23,10 +23,10 @@ body {
     linear-gradient( 336deg, rgba( $colorSecondary, .8 ), rgba( $colorSecondary, 0 ) 70.71% );
 
   @media #{$screenSmall} {
-    font-size: calc( #{$fontSize} - 4px );
+    font-size: calc( #{$fontSize} - 2px );
   }
   @media #{$screenMedium} {
-    font-size: calc( #{$fontSize} - 2px );
+    font-size: calc( #{$fontSize} - 1px );
   }
   @media #{$screenLarge} {
     font-size: $fontSize;

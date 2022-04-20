@@ -9,6 +9,7 @@
 @import './forms';
 @import './popover';
 @import './type';
+@import './icons';
 
 // app root
 .app-wrap {
@@ -89,6 +90,10 @@
       i { vertical-align: bottom; }
     }
   }
+  .player-logo {
+    font-weight: 800;
+    letter-spacing: -0.05em;
+  }
   .player-content {
     flex: 1;
     height: 100%;
@@ -131,13 +136,15 @@
 // player stations sidebar
 .player-stations {
   position: absolute;
+  overflow: hidden;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
+  border-radius: $lineJoin;
   background-color: rgba( $colorOverlay, 0 );
   pointer-events: none;
-  z-index: 1;
+  z-index: -1;
 
   .player-stations-sidebar {
     display: flex;
@@ -146,14 +153,13 @@
     justify-content: stretch;
     position: absolute;
     top: 0;
-    right: -320px;
-    width: 320px;
+    left: 100%;
+    width: 100vw;
     min-height: 100%;
     max-height: 100%;
     background-color: lighten( $colorDocumentDark, 2% );
 
     @media #{$screenSmall} {
-      right: -420px;
       width: 420px;
     }
 
@@ -185,7 +191,7 @@
         &:hover {
           background-color: rgba( black, 0 );
         }
-        &.active {
+        &:focus, &:active, &.active {
           background-color: darken( $colorDocumentDark, 2% );
           .player-stations-list-title { color: $colorPrimary; }
         }
@@ -193,19 +199,26 @@
     }
   }
 
+  // bring to front
+  &.active {
+    pointer-events: auto;
+    z-index: 1000;
+  }
+
   // slide out
   &.visible {
     background-color: $colorOverlay;
-    pointer-events: auto;
-    z-index: 1000;
 
     .player-stations-sidebar {
-      transform: translateX( -320px );
-      box-shadow: $shadowOverlay;
-      @media #{$screenSmall} { transform: translateX( -420px ); }
+      transform: translate3d( 0, 0, 0 );
+      transform: translateX( -100vw );
+
+      @media #{$screenSmall} {
+        transform: translateX( -420px );
+        box-shadow: $shadowOverlay;
+      }
     }
     .player-stations-list-item.active:before {
-      content: '';
       display: block;
       position: absolute;
       transition: none;
@@ -215,6 +228,7 @@
       border-top: 10px solid transparent;
       border-bottom: 10px solid transparent;
       border-right: 10px solid darken( $colorDocumentDark, 2% );
+      content: '';
     }
   }
 }

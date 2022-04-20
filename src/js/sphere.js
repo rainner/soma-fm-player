@@ -5,6 +5,7 @@ export default {
   group: null,
   shapes: [],
   move: new THREE.Vector3( 0, 0, 0 ),
+  touch: false,
   ease: 8,
 
   // create and add sphere to scene
@@ -29,7 +30,8 @@ export default {
       shape.userData = { radius, cycle, pace, home };
       this.group.add( shape );
     }
-    this.group.position.set( 500, 0, 0 );
+    this.touch = ( ( 'ontouchstart' in window ) || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0 );
+    this.group.position.set( 40, 5, 0 );
     this.group.rotation.x = ( Math.PI / 2 ) + .6;
     scene.add( this.group );
   },
@@ -40,16 +42,22 @@ export default {
     let zoff = ( box.width < 800 ) ? -60 : 20;
     let zmod = .5 + ( .5 * freq );
 
-    this.move.x = xoff + -( mouse.x * 0.012 );
-    this.group.position.x += ( this.move.x - this.group.position.x ) / this.ease;
-    this.group.position.y += ( this.move.y - this.group.position.y ) / this.ease;
+    // prevent sphere from moving left/right on touch devices
+    if ( this.touch ) {
+      this.group.position.x = xoff;
+    } else {
+      this.move.x = xoff + -( mouse.x * 0.012 );
+      this.group.position.x += ( this.move.x - this.group.position.x ) / this.ease;
+      this.group.position.y += ( this.move.y - this.group.position.y ) / this.ease;
+    }
+    // move on z-axis with music data and rotate
     this.group.position.z = zoff + ( 80 * freq );
     this.group.rotation.y -= 0.003;
 
+    // adjust individual sphere points
     for ( let i = 0; i < this.group.children.length; i++ ) {
       let shape = this.group.children[ i ];
       let { radius, cycle, pace, home } = shape.userData;
-
       shape.material.opacity = .2 + ( .8 * freq );
       shape.position.set( home.x, home.y, home.z );
       shape.translateZ( zmod * Math.sin( cycle / pace ) * radius );

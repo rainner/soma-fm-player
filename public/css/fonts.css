@@ -1,0 +1,25 @@
+
+@font-face {
+  font-family: 'Assistant';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/public/fonts/Assistant-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Assistant';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/public/fonts/Assistant-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'fontello';
+  font-style: normal;
+  font-display: swap;
+  src: url('/public/fonts/fontello.woff2?45788083') format('woff2'),
+       url('/public/fonts/fontello.woff?45788083') format('woff');
+}
+

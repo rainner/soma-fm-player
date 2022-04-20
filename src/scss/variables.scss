@@ -1,7 +1,7 @@
 // spacing and padding
 $padSpace: 1em;
 $padSmall: $padSpace / 2;
-$headerHeight: 3.5em;
+$headerHeight: 3.6em;
 
 // document colors
 $colorDocument: #8086a0;
@@ -35,10 +35,14 @@ $lineColor: rgba( black, 0.08 );
 $lineJoin: 6px;
 
 // base font options
-$fontFamily: 'Roboto Condensed', sans-serif;
-$fontSize: 20px;
-$fontSpace: 1.2em;
+$fontFamily: 'Assistant', sans-serif;
+$fontSize: 18px;
+$fontSpace: 1.4em;
 $fontWeight: 700;
+
+// focus effects
+$focusText: 0 0 12px rgba( darkorange, .5 );
+$focusBox: 0 0 12px rgba( darkorange, .5 );
 
 // shadow styles
 $shadowContainer: 0 1px 30px rgba( black, 0.8 );
@@ -55,14 +59,14 @@ $fxGrowScale: 1.4;
 $fxRotateAmount: 8deg;
 
 // screen sizes
-$sizeSmall: 420px;
+$sizeSmall: 480px;
 $sizeMedium: 820px;
 $sizeLarge: 1200px;
 
 // screen breakpoints
-$screenSmall: "only screen and (min-width : #{$sizeSmall})";
-$screenMedium: "only screen and (min-width : #{$sizeMedium})";
-$screenLarge: "only screen and (min-width : #{$sizeLarge})";
+$screenSmall: "only screen and (min-width: #{$sizeSmall})";
+$screenMedium: "only screen and (min-width: #{$sizeMedium})";
+$screenLarge: "only screen and (min-width: #{$sizeLarge})";
 
 // customized scrollbars
 @mixin customScrollbar {

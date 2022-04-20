@@ -5,15 +5,9 @@
   border: 0;
   outline: none;
   background-color: transparent;
-  text-transform: none;
-  text-shadow: none;
-  box-shadow: none;
   box-sizing: border-box;
-  appearance: none;
-  -webkit-overflow-scrolling: touch;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transform-style: flat;
   transition:
     border-color $fxSpeed $fxEase,
     background-color $fxSpeed $fxEase,
@@ -41,9 +35,8 @@ select, button {
 }
 
 // links
-a {
+a, .link {
   color: $colorSecondary;
-
   &:hover {
     color: lighten( $colorSecondary, 10% );
   }

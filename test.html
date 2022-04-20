@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Web Audio Test</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=Edge, chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="description" id="description" content="Test of web audio using both local and stream mp3 data." />
+
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; border: 0; }
+      html, body { display: block; min-height: var( --vh, 100vh ); }
+      body { display: flex; flex-direction: row; align-items: center; justify-content: center; background-color: #221133; line-height: 1.4em; }
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; color: #333; }
+      button { display: block; width: 100%; padding: .8rem 1.4rem; min-width: 200px; background-color: burlywood; border-radius: 6px; cursor: pointer; font: inherit; color: inherit; }
+      button:hover, button:active, button:focus { background-color: coral; }
+      h1, h2, h3 { line-height: 1.2em; margin: 0 0 1rem 0; }
+      #app { width: 100%; max-width: 800px; margin: 2rem; padding: 2rem; border-radius: 6px; background-color: #f0f0f0; }
+      #analizer { display: block; width: 100%; height: 100px; background-color: rgba( 0, 0, 0, 0.1 ); }
+      #fader { display: block; width: 100%; }
+      #btns { display: grid; grid-template-columns: repeat( auto-fill, minmax( 200px, 1fr ) ); gap: 1rem; justify-content: center; }
+      .push-up { margin: 1rem 0 0 0; }
+      .align-center { margin: 0 auto; }
+      .text-center { text-align: center; }
+    </style>
+
+  </head>
+  <body>
+
+    <div id="app">
+      <h1>Web Audio API Test</h1>
+      <div class="push-up">
+        Use this to see if the audio, volume and visualization are working on different devices.
+        Choose between playing a static mp3 file, or a live audio stream.
+      </div>
+      <div class="push-up">
+        <canvas id="analizer"></canvas>
+      </div>
+      <div class="push-up text-center">
+        <input id="fader" type="range" min="0" max="100" step="1" value="50" />
+      </div>
+      <div class="push-up text-center" id="btns">
+        <button type="button" id="btn-file">Play File</button>
+        <button type="button" id="btn-stream">Play Stream</button>
+        <button type="button" id="btn-stop">Stop Audio</button>
+      </div>
+    </div>
+
+    <script>
+      // audio stuff
+      let _audio    = null;
+      let _context  = null;
+      let _source   = null;
+      let _analyser = null;
+      let _gain     = null;
+      let _freq     = null;
+      // canvas stuff
+      let _root     = document.querySelector( ':root' );
+      let _canvas   = document.querySelector( '#analizer' );
+      let _fader    = document.querySelector( '#fader' );
+      let _box      = _canvas.getBoundingClientRect();
+      let _ctx      = _canvas.getContext( '2d' );
+      let _volume   = ( parseFloat( _fader.value ) || 50 ) / 100;
+      // media files
+      let _mp3file  = '/public/audio/intruder_alert.mp3';
+      let _mp3strm  = 'http://79.120.39.202:8002/darkelectro';
+
+      // play audio from url
+      function playAudio( url ) {
+        if ( !_audio ) {
+          _audio    = new Audio();
+          _context  = new ( window.AudioContext || window.webkitAudioContext )();
+          _source   = _context.createMediaElementSource( _audio );
+          _analyser = _context.createAnalyser();
+          _gain     = _context.createGain();
+
+          _analyser.fftSize = ( _box.width > 700 ) ? 1024 : 256;
+          _gain.gain.value = _volume;
+
+          _source.connect( _gain );
+          _gain.connect( _analyser );
+          _analyser.connect( _context.destination );
+
+          _audio.addEventListener( 'canplay', e => {
+            _freq = new Uint8Array( _analyser.frequencyBinCount );
+            _audio.play();
+          });
+        }
+        if ( _context.state === 'suspended' ) {
+          _context.resume();
+        }
+        _audio.pause();
+        _audio.src = String( url || '' ) + '?x=' + Date.now();
+        _audio.crossOrigin = 'anonymous';
+        _audio.preload = 'none';
+        _audio.load();
+      }
+
+      // update analizer data
+      function updateAnalizer() {
+        requestAnimationFrame( updateAnalizer );
+        if ( !_analyser || !_freq ) return;
+
+        _analyser.getByteFrequencyData( _freq );
+        let _w = _box.width * 1.0 / _analyser.frequencyBinCount;
+        let _x = 0;
+
+        _ctx.clearRect( 0, 0, _box.width, _box.height );
+        _ctx.fillStyle = 'rgba( 0, 0, 0, 0.6 )';
+
+        for ( let i = 0; i < _analyser.frequencyBinCount; i++ ) {
+          let _f = _freq[ i ] / 255;
+          let _h = ( _box.height * _f );
+          let _y = _box.height - _h;
+
+          _ctx.fillRect( _x, _y, _w, _h );
+          _x += _w + 1;
+        }
+      }
+
+      // update height property on root element
+      function upadteHeight() {
+        _root.style.setProperty( '--vh', `${window.innerHeight}px` );
+      }
+
+      // update canvas size on window resize
+      function updateCanvas() {
+        _box = _canvas.getBoundingClientRect();
+        _canvas.width  = _box.width;
+        _canvas.height = _box.height;
+      }
+
+      // update gain volume
+      function updateVolume( vol ) {
+        _volume = ( parseFloat( vol ) || 0 ) / 100;
+        if ( _gain ) _gain.gain.value = _volume;
+      }
+
+      // setup file btn
+      document.querySelector( '#btn-file' ).addEventListener( 'click', e => {
+        playAudio( _mp3file );
+      });
+
+      // setup stream btn
+      document.querySelector( '#btn-stream' ).addEventListener( 'click', e => {
+        playAudio( _mp3strm );
+      });
+
+      // setup stop btn
+      document.querySelector( '#btn-stop' ).addEventListener( 'click', e => {
+        if ( _audio ) _audio.pause();
+      });
+
+      // setup volume fader
+      _fader.addEventListener( 'input', e => {
+        updateVolume( e.target.value );
+      });
+
+      // update stuff on resize
+      window.addEventListener( 'resize', e => {
+        upadteHeight();
+        updateCanvas();
+      });
+
+      // init
+      upadteHeight();
+      updateCanvas();
+      updateAnalizer();
+    </script>
+
+  </body>
+</html>

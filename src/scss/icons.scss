@@ -1,0 +1,54 @@
+
+// base icon class
+.ico {
+  display: inline-block;
+  &:before {
+    display: inline-block;
+    font-family: "fontello";
+    font-variant: normal;
+    font-style: normal;
+    font-weight: normal;
+    text-align: center;
+    text-rendering: auto;
+    text-decoration: inherit;
+    text-transform: none;
+    line-height: 1em;
+    width: 1em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+.ico-earmuffs:before { content: '\e800'; } /* '' */
+.ico-headphones:before { content: '\e801'; } /* '' */
+.ico-menu:before { content: '\e802'; } /* '' */
+.ico-volume-4:before { content: '\e807'; } /* '' */
+.ico-volume-2:before { content: '\e808'; } /* '' */
+.ico-volume-1:before { content: '\e809'; } /* '' */
+.ico-volume-3:before { content: '\e80a'; } /* '' */
+.ico-play:before { content: '\e80b'; } /* '' */
+.ico-pause:before { content: '\e80c'; } /* '' */
+.ico-stop:before { content: '\e80d'; } /* '' */
+.ico-timer:before { content: '\e80e'; } /* '' */
+.ico-spinner:before { content: '\e80f'; } /* '' */
+.ico-loader:before { content: '\e810'; } /* '' */
+.ico-sort-asc:before { content: '\e811'; } /* '' */
+.ico-sort-desc:before { content: '\e812'; } /* '' */
+.ico-download:before { content: '\e813'; } /* '' */
+.ico-search:before { content: '\e814'; } /* '' */
+.ico-close:before { content: '\e815'; } /* '' */
+.ico-gear:before { content: '\e816'; } /* '' */
+.ico-favs-check:before { content: '\e817'; } /* '' */
+.ico-favs-add:before { content: '\e818'; } /* '' */
+.ico-waveform:before { content: '\e81a'; } /* '' */
+.ico-playing:before { content: '\e81b'; } /* '' */
+.ico-collection:before { content: '\e81c'; } /* '' */
+.ico-unplugged:before { content: '\e81d'; } /* '' */
+.ico-twitter:before { content: '\e81e'; } /* '' */
+.ico-facebook:before { content: '\e81f'; } /* '' */
+.ico-github:before { content: '\e820'; } /* '' */
+.ico-codepen:before { content: '\e821'; } /* '' */
+.ico-earth:before { content: '\e822'; } /* '' */
+.ico-house:before { content: '\e823'; } /* '' */
+.ico-donate:before { content: '\e824'; } /* '' */
+.ico-bug:before { content: '\e825'; } /* '' */

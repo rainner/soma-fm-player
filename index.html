@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="nojs" lang="en">
   <head>
     <title>Soma FM Player</title>
 
@@ -9,20 +9,28 @@
     <meta name="description" id="description" content="SPA audio player for the streaming stations provided by Soma FM." />
     <meta name="author" content="Rainner Lins | @raintek_ | https://rainnerlins.com | https://github.com/rainner" />
 
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="prefetch" href="https://somafm.com/channels.json" />
+    <link rel="preconnect" href="https://ice1.somafm.com" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+
     <style type="text/css">
       @keyframes _spin { 0% { transform: rotate( 0deg ); } 100% { transform: rotate( 359deg ); } }
       html, body { margin: 0; padding: 0; position: relative; overflow: hidden; min-height: 100vh; background-color: #8086a0; }
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; }
       #_spnr { display: flex; flex-direction: column; align-items: center; justify-content: center; position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 9999; }
-      #_spnr { text-align: center; font-family: Arial, Helvetica, sans-serif; color: antiquewhite; }
+      #_spnr { text-align: center; font-family: Arial, Helvetica, sans-serif; background-color: #8086a0; color: #1e1f30; }
       #_spnr svg { display: block; margin: 0; padding: 0; animation: _spin 1s linear infinite; }
       #_spnr noscript { max-width: 500px; }
       #_spnr a { color: crimson; }
     </style>
 
-    <link rel="shortcut icon" href="favicon.ico" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Condensed:700" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="public/bundles/app.min.css" />
+    <script>
+      (function( w ) {
+        document.documentElement.classList.remove( 'nojs' );
+        w.addEventListener( 'pageshow', e => { if ( e.persisted ) w.location.reload(); } );
+      })( window );
+    </script>
 
   </head>
   <body>
@@ -56,8 +64,8 @@
 
           <!-- player top header -->
           <header class="player-header flex-row flex-middle flex-stretch">
-            <h2 class="text-clip flex-1"><i class="fa fa-headphones"></i> <span>Soma FM Player</span></h2>
-            <button class="text-nowrap common-btn" @click="toggleSidebar( true )"><i class="fa fa-bars"></i></button>
+            <h2 class="player-logo text-clip flex-1"><i class="ico ico-waveform"></i> &nbsp; <span>Soma FM Player</span></h2>
+            <button class="text-nowrap common-btn focus-text" type="button" @click="toggleSidebar( true )" title="Open stations menu"><i class="ico ico-menu"></i></button>
           </header>
 
           <!-- player middle content area -->
@@ -67,7 +75,7 @@
             <section class="player-greet" v-if="!hasChannel && !hasErrors">
               <div class="fx fx-slide-left push-bottom"><h1>Pick a Station</h1></div>
               <div class="fx fx-slide-left fx-delay-1 push-bottom">This is a music streaming player for the channels provided by SomaFM.com. Just pick a station from the sidebar to the right to start listening.</div>
-              <div class="fx fx-slide-up fx-delay-2 pad-top"><button class="cta-btn" @click="toggleSidebar( true )"><i class="fa fa-headphones">&nbsp;</i> View Stations</button></div>
+              <div class="fx fx-slide-up fx-delay-2 pad-top"><button class="cta-btn focus-box" type="button" @click="toggleSidebar( true )"><i class="ico ico-headphones"></i> &nbsp; View Stations</button></div>
             </section>
 
             <!-- show selected channel info if possible -->
@@ -79,62 +87,88 @@
 
                   <!-- station -->
                   <div class="push-bottom">
-                    <div class="flex-row flex-middle">
-                      <img class="img-round fx fx-drop-in fx-delay-1" :src="channel.largeimage" width="80" height="80" :alt="channel.title" />
-                      <div class="pad-left fx fx-slide-left fx-delay-2">
-                        <h3 class="text-clip">{{ channel.title }}</h3>
-                        <div class="text-nowrap">
-                          <span class="text-clip text-uppercase">{{ channel.genre | toText }} &nbsp;</span>
-                          <fav-btn :id="channel.id" :active="channel.favorite" @change="toggleFavorite"></fav-btn>
+                    <div class="flex-row flex-middle pad-bottom">
+                      <div class="fx fx-drop-in fx-delay-1">
+                        <img class="img-round" :src="channel.largeimage" width="80" height="80" :alt="channel.title" />
+                      </div>
+                      <div class="pad-left">
+                        <h3 class="text-clip fx fx-fade-in fx-delay-2">
+                          <span>{{ channel.title }}</span>
+                        </h3>
+                        <div class="fx fx-fade-in fx-delay-3">
+                          <fav-btn :id="channel.id" :active="channel.favorite" text="Favorite" @change="toggleFavorite"></fav-btn>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   <!-- description -->
-                  <div class="card push-bottom fx fx-slide-up fx-delay-3">
-                    <div class="text-secondary">Mixed by DJ {{ channel.dj | toText( 'N/A' ) }}.</div>
-                    <div>{{ channel.description }}</div>
+                  <div class="push-bottom pad-bottom fx fx-slide-up fx-delay-3">
+                    <div class="push-bottom">
+                      <span class="text-secondary">Mixed by DJ {{ channel.dj | toText( 'N/A' ) }}.</span> <br />
+                      <span class="text-bright text-capitalize">{{ channel.title }}</span> -
+                      <span class="text-bright text-capitalize">{{ channel.genre | toText( 'Station' ) }}.</span> <br />
+                      <span>{{ channel.description }}</span>
+                    </div>
+                    <div class="flex-row flex-middle">
+                      <div class="fx fx-slide-up fx-delay-2 push-right" v-if="channel.infourl">
+                        <a class="cta-btn text-nowrap focus-box" :href="channel.infourl" title="Channel page" target="_blank">
+                          <i class="ico ico-earth"></i>&nbsp; Webpage
+                        </a>
+                      </div>
+                      <div class="fx fx-slide-up fx-delay-3 push-right" v-if="channel.plsfile">
+                        <a class="cta-btn text-nowrap focus-box" :href="channel.plsfile" title="Download PLS" target="_blank">
+                          <i class="ico ico-download"></i>&nbsp; PLS
+                        </a>
+                      </div>
+                      <div class="fx fx-slide-up fx-delay-4 push-right" v-if="channel.twitter">
+                        <a class="cta-btn text-nowrap focus-box" :href="channel.twitter" title="Twitter page" target="_blank">
+                          <i class="ico ico-twitter"></i>
+                        </a>
+                      </div>
+                    </div>
                   </div>
 
-                  <!-- buttons -->
-                  <div class="push-bottom text-nowrap">
-                    <a class="cta-btn text-nowrap fx fx-slide-up fx-delay-4" :href="channel.infourl" title="Channel page" target="_blank">
-                      <span class="fx fx-notx fx-ibk fx-drop-in" :key="channel.listeners"><i class="fa fa-headphones"></i> {{ channel.listeners | toCommas( 0 ) }}</span>
-                    </a> &nbsp;
-                    <a class="cta-btn text-nowrap fx fx-slide-up fx-delay-5" :href="channel.twitter" title="Twitter page" target="_blank">
-                      <i class="fa fa-twitter"></i>
-                    </a> &nbsp;
-                    <a class="cta-btn text-nowrap fx fx-slide-up fx-delay-6" :href="channel.plsfile" title="Download PLS" target="_blank">
-                      <i class="fa fa-download"></i>
-                    </a>
+                  <!-- heading -->
+                  <div class="flex-row flex-middle push-bottom">
+                    <div class="push-right">
+                      <h5 class="text-nowrap fx fx-fade-in fx-delay-2"><i class="ico ico-playing"></i>&nbsp; Now Playing</h5>
+                    </div>
+                    <div class="fx fx-slide-left fx-delay-3" :key="channel.listeners">
+                      <i class="ico ico-headphones"></i>&nbsp; {{ channel.listeners | toCommas( 0 ) }} listening
+                    </div>
                   </div>
 
                   <!-- current track -->
-                  <div class="card push-bottom fx fx-slide-left fx-delay-7" :key="track.date">
-                    <h5 class="heading text-nowrap">Now Playing</h5>
+                  <div class="card fx fx-slide-left fx-delay-4" :key="track.date">
                     <div><span class="text-secondary">{{ track.title | toText( 'N/A' ) }}</span></div>
-                    <div><span class="text-faded">From:</span> <span class="text-bright">{{ track.album | toText( 'N/A' ) }}</span></div>
-                    <div><span class="text-faded">By:</span> <span class="text-default">{{ track.artist | toText( 'N/A' ) }}</span></div>
+                    <div><span class="text-faded">From:</span>&nbsp; <span class="text-bright">{{ track.album | toText( 'N/A' ) }}</span></div>
+                    <div><span class="text-faded">By:</span>&nbsp; <span class="text-default">{{ track.artist | toText( 'N/A' ) }}</span></div>
                   </div>
 
                 </div>
 
                 <!-- songs list -->
                 <div class="flex-item flex-1">
+
                   <div class="push-bottom">
-                    <h4 class="text-nowrap fx fx-slide-left fx-delay-1">Recent Tracks</h4>
+                    <h5 class="text-nowrap fx fx-fade-in fx-delay-1">
+                      <i class="ico ico-collection"></i>&nbsp; Recent Tracks
+                    </h5>
                   </div>
-                  <div class="card push-bottom" v-if="!hasSongs">
+
+                  <div class="card push-bottom fx fx-slide-left fx-delay-4" v-if="!hasSongs">
                     There are no songs loaded yet for this station.
                   </div>
+
                   <ul class="player-tracklist push-bottom" v-if="hasSongs">
-                    <li v-for="( s, i ) of songsList" :key="s.date" class="card fx" :class="'fx-slide-left fx-delay-' + ( i + 2 )">
+                    <li v-for="( s, i ) of songsList" :key="s.date" class="card fx" :class="'fx-slide-left fx-delay-' + ( i + 4 )">
                       <div><span class="text-secondary">{{ s.title | toText( 'N/A' ) }}</span></div>
-                      <div><span class="text-faded">From:</span> <span class="text-bright">{{ s.album | toText( 'N/A' ) }}</span></div>
-                      <div><span class="text-faded">By:</span> <span class="text-default">{{ s.artist | toText( 'N/A' ) }}</span></div>
+                      <div><span class="text-faded">From:</span>&nbsp; <span class="text-bright">{{ s.album | toText( 'N/A' ) }}</span></div>
+                      <div><span class="text-faded">By:</span>&nbsp; <span class="text-default">{{ s.artist | toText( 'N/A' ) }}</span></div>
                     </li>
                   </ul>
+
                 </div>
 
               </div>
@@ -143,7 +177,7 @@
             <!-- show error messages -->
             <section class="player-errors flex-1 text-center" v-if="hasErrors" key="errors">
               <div class="push-bottom fx fx-drop-in fx-delay-1">
-                <i class="fa fa-plug text-huge text-faded"></i>
+                <i class="ico ico-unplugged text-huge"></i>
               </div>
               <div class="fx fx-slide-up fx-delay-2">
                 <h3>Oops, there's a problem!</h3>
@@ -153,8 +187,8 @@
                 <span class="text-primary">{{ e }}</span>
               </div>
               <hr />
-              <button class="cta-btn text-nowrap fx fx-slide-up fx-delay-4" @click="tryAgain">
-                <i class="fa fa-refresh"></i> Try again
+              <button class="cta-btn text-nowrap focus-box fx fx-slide-up fx-delay-4" type="button" @click="tryAgain">
+                <i class="ico ico-waveform"></i>&nbsp; Try again
               </button>
             </section>
 
@@ -165,15 +199,19 @@
 
             <!-- player controls -->
             <section class="player-controls flex-row flex-middle push-right" :class="{ 'disabled': !canPlay }">
-              <button class="common-btn" @click="togglePlay">
-                <i v-if="loading" class="fa fa-circle-o-notch fx fx-spin-right" key="wait"></i>
-                <i v-else-if="playing" class="fa fa-stop fx fx-drop-in" key="stop"></i>
-                <i v-else class="fa fa-play fx fx-drop-in" key="play"></i>
+              <button class="common-btn focus-text" type="button" @click="togglePlay">
+                <i v-if="loading" class="ico ico-loader fx fx-spin-right" key="wait"></i>
+                <i v-else-if="playing" class="ico ico-stop fx fx-drop-in" key="stop"></i>
+                <i v-else class="ico ico-play fx fx-drop-in" key="play"></i>
               </button>
               <div class="form-slider push-left">
-                <i class="fa fa-volume-down"></i>
-                <input class="common-slider" type="range" min="0.0" max="1.0" step="0.1" value="0.5" v-model="volume" />
-                <i class="fa fa-volume-up"></i>
+                <span>
+                  <i v-if="volume >= 75" class="ico ico-volume-4"></i>
+                  <i v-else-if="volume >= 50" class="ico ico-volume-3"></i>
+                  <i v-else-if="volume >= 25"class="ico ico-volume-2"></i>
+                  <i v-else class="ico ico-volume-1"></i>
+                </span>
+                <input class="common-slider" type="range" min="0" max="100" step="1" value="100" v-model="volume" @change="saveVolume" />
               </div>
               <div class="text-clip push-left">
                 <span>{{ timeDisplay }}</span>
@@ -184,8 +222,8 @@
 
             <!-- player links -->
             <section class="player-links text-nowrap">
-              <a class="common-btn text-faded" href="https://github.com/rainner" title="Github profile" target="_blank">
-                <i class="fa fa-github"></i>
+              <a class="common-btn text-faded focus-text" href="https://github.com/rainner" title="Github profile" target="_blank">
+                <i class="ico ico-github"></i>
               </a>
             </section>
 
@@ -194,29 +232,29 @@
         </section> <!-- layout wrapper -->
 
         <!-- player stations overlay + sidebar -->
-        <section class="player-stations" :class="{ 'visible': sidebar }" @click="toggleSidebar( false )">
+        <section class="player-stations" :class="{ 'active': sbActive, 'visible': sbVisible }" @click="toggleSidebar( false )" tabindex="-1" ref="sidebarDrawer">
           <aside class="player-stations-sidebar" @click.stop>
 
             <!-- sidebar search -->
             <header class="player-stations-header flex-row flex-middle flex-stretch">
               <div class="form-input push-right">
-                <i class="fa fa-search"></i>
+                <i class="ico ico-search"></i>
                 <input type="text" placeholder="Search station..." v-model="searchText" />
               </div>
-              <button class="common-btn" @click="toggleSidebar( false )"><i class="fa fa-times-circle"></i></button>
+              <button class="common-btn focus-text" type="button" @click="toggleSidebar( false )" title="Close stations menu"><i class="ico ico-close"></i></button>
             </header>
 
             <!-- sidebar stations list -->
             <ul class="player-stations-list">
-              <li class="player-stations-list-item flex-row flex-top flex-stretch" v-for="c of channelsList" :key="c.id" @click="selectChannel( c, true )" :class="{ 'active': c.active }">
-                <figure class="push-right if-small">
+              <li class="player-stations-list-item flex-row flex-top flex-stretch" tabindex="0" v-for="c of channelsList" :key="c.id" @click="selectChannel( c, true )" :class="{ 'active': c.active }" :title="c.title">
+                <figure class="push-right">
                   <img class="img-round" width="70" height="70" :src="c.largeimage" :alt="c.title" />
                 </figure>
                 <aside class="flex-1">
                   <div class="flex-row flex-middle flex-space">
                     <div class="player-stations-list-title text-bright text-clip">{{ c.title }}</div>
                     <div class="text-nowrap">
-                      <span class="text-secondary"><i class="fa fa-headphones"></i> {{ c.listeners | toCommas( 0 ) }} &nbsp;</span>
+                      <span class="text-secondary"><i class="ico ico-headphones"></i>&nbsp; {{ c.listeners | toCommas( 0 ) }} &nbsp;</span>
                       <fav-btn :id="c.id" :active="c.favorite" @change="toggleFavorite"></fav-btn>
                     </div>
                   </div>
@@ -231,21 +269,21 @@
             <!-- sidebar sort options -->
             <footer class="player-stations-footer flex-row flex-middle flex-stretch">
               <div class="flex-1 push-right">
-                <span @click="toggleSortOrder()" class="fa clickable" :class="{ 'fa-sort-amount-desc': sortOrder === 'desc', 'fa-sort-amount-asc': sortOrder === 'asc' }">&nbsp;</span>
+                <span @click="toggleSortOrder()" class="ico clickable" :class="{ 'ico-sort-desc': sortOrder === 'desc', 'ico-sort-asc': sortOrder === 'asc' }">&nbsp;</span>
                 <span class="text-faded">Sort: &nbsp;</span>
                 <span class="text-bright popover">
                   <span class="clickable">{{ sortLabel }}</span>
                   <span class="popover-box popover-top">
-                    <button @click="sortBy( 'title', 'asc' )"><i class="text-faded fa fa-font">&nbsp;</i> Station Name</button>
-                    <button @click="sortBy( 'listeners', 'desc' )"><i class="text-faded fa fa-headphones">&nbsp;</i> Listeners Count</button>
-                    <button @click="sortBy( 'favorite', 'desc' )"><i class="text-faded fa fa-heart">&nbsp;</i> Saved Favorites</button>
-                    <button @click="sortBy( 'genre', 'asc' )"><i class="text-faded fa fa-music">&nbsp;</i> Music Genre</button>
+                    <button type="button" @click="sortBy( 'title', 'asc' )"><i class="text-faded ico ico-sort-asc"></i> &nbsp; Station Name</button>
+                    <button type="button" @click="sortBy( 'listeners', 'desc' )"><i class="text-faded ico ico-headphones"></i> &nbsp; Listeners Count</button>
+                    <button type="button" @click="sortBy( 'favorite', 'desc' )"><i class="text-faded ico ico-favs-check"></i> &nbsp; Saved Favorites</button>
+                    <button type="button" @click="sortBy( 'genre', 'asc' )"><i class="text-faded ico ico-collection"></i> &nbsp; Music Genre</button>
                   </span>
                 </span>
               </div>
               <div>
-                <button title="Download Favorites PLS" @click.stop="saveFavorites()">
-                  <i class="fa fa-download"></i>
+                <button type="button" @click.stop="saveFavorites()" title="Download Favorites PLS">
+                  <i class="ico ico-download"></i>
                 </button>
               </div>
             </footer>
@@ -257,11 +295,15 @@
 
     </div> <!-- wrapper -->
 
+    <!-- app styles -->
+    <link rel="stylesheet" href="/public/css/fonts.css" />
+    <link rel="stylesheet" href="/public/bundles/app.min.css" />
+
     <!-- app scripts -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/96/three.min.js" defer></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js" defer></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js" defer></script>
-    <script src="public/bundles/app.min.js" defer></script>
+    <script src="/public/bundles/app.min.js" defer></script>
 
   </body>
 </html>

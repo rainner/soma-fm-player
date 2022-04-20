@@ -8,6 +8,8 @@ export default {
   _gain: null,
   _analyser: null,
   _freq: new Uint8Array( 32 ),
+  _hasfreq: false,
+  _counter: 0,
   _events: {},
 
   // setup audio routing, called after user interaction, setup once
@@ -21,8 +23,8 @@ export default {
     this._gain     = this._context.createGain();
 
     this._analyser.fftSize = 32;
-    this._source.connect( this._gain );
     this._source.connect( this._analyser );
+    this._source.connect( this._gain );
     this._gain.connect( this._context.destination );
 
     this._audio.addEventListener( 'canplay', e => {
@@ -49,27 +51,37 @@ export default {
     }
   },
 
-  // update and return analyser frequency data
-  // this is not working on some apple devices:
-  // https://bugs.webkit.org/show_bug.cgi?id=211394
+  // update and return analyser frequency value (0-1) to control animations
   getFreqData( playing ) {
-    if ( this._analyser ) {
-      this._analyser.getByteFrequencyData( this._freq );
-    }
+    if ( !this._analyser ) return 0;
+
+    // this is not working on some devices running safari
+    this._analyser.getByteFrequencyData( this._freq );
     let _freq = Math.floor( this._freq[ 4 ] | 0 ) / 255;
 
+    // indicate that a freq value can be read
+    if ( !this._hasfreq && _freq ) { this._hasfreq = true; }
+
+    // frequency data available
+    if ( this._hasfreq ) return _freq;
+
+    // return fake counter if no freq data available (safari workaround)
     if ( playing ) {
-      return ( _freq ) ? _freq : 0.6;
+      this._counter = ( this._counter < .6 ) ? ( this._counter + .01 ) : this._counter;
+    } else {
+      this._counter = ( this._counter > 0 ) ? ( this._counter - .01 ) : this._counter;
     }
-    return _freq;
+    return this._counter;
   },
 
   // set audio volume
   setVolume( volume ) {
     if ( !this._gain ) return;
-    volume = parseFloat( volume ) || 0.0;
-    volume = ( volume < 0 ) ? 0 : volume;
+    volume = parseFloat( volume ) || 0;
+    volume = ( volume > 1 ) ? ( volume / 100 ) : volume;
     volume = ( volume > 1 ) ? 1 : volume;
+    volume = ( volume < 0 ) ? 0 : volume;
+    this._audio.muted = ( volume <= 0 ) ? true : false;
     this._gain.gain.value = volume;
   },
 
@@ -92,7 +104,9 @@ export default {
       });
     }
     this._audio.src = String( source || '' ) + '?x=' + Date.now();
+    this._audio.preload = 'metadata';
     this._audio.crossOrigin = 'anonymous';
+    this._audio.autoplay = false;
     this._audio.load();
   },
 
