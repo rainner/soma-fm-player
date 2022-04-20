@@ -220,8 +220,8 @@ new Vue({
       this.playChannel( this.channel );
     },
 
-    // save volume
-    saveVolume( e ) {
+    // save volume to store
+    saveVolume() {
       _store.set( 'player_volume', this.volume );
     },
 

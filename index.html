@@ -211,7 +211,7 @@
                   <i v-else-if="volume >= 25"class="ico ico-volume-2"></i>
                   <i v-else class="ico ico-volume-1"></i>
                 </span>
-                <input class="common-slider" type="range" min="0" max="100" step="1" value="100" v-model="volume" />
+                <input class="common-slider" type="range" min="0" max="100" step="1" value="100" v-model="volume" @change="saveVolume()" />
               </div>
               <div class="text-clip push-left">
                 <span>{{ timeDisplay }}</span>
@@ -301,8 +301,8 @@
 
     <!-- app scripts -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/96/three.min.js" defer></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js" defer></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js" defer></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js" defer></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.6.14/vue.min.js" defer></script>
     <script src="/public/bundles/app.min.js" defer></script>
 
   </body>
