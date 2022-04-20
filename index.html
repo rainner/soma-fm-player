@@ -211,7 +211,7 @@
                   <i v-else-if="volume >= 25"class="ico ico-volume-2"></i>
                   <i v-else class="ico ico-volume-1"></i>
                 </span>
-                <input class="common-slider" type="range" min="0" max="100" step="1" value="100" v-model="volume" @change="saveVolume" />
+                <input class="common-slider" type="range" min="0" max="100" step="1" value="100" v-model="volume" />
               </div>
               <div class="text-clip push-left">
                 <span>{{ timeDisplay }}</span>

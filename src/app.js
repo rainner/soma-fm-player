@@ -222,7 +222,6 @@ new Vue({
 
     // save volume
     saveVolume( e ) {
-      console.log( this.volume );
       _store.set( 'player_volume', this.volume );
     },
 
